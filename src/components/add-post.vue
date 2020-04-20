@@ -77,7 +77,7 @@
     },
     methods: {
       onSubmit(evt) {
-        axios.post('/createpost',this.form,{'Content-Type':'application/x-www-form-urlencoded','Accept':'application/json','withCredentials': true}).then(message=>{
+        axios.post('/createpost',this.form).then(message=>{
           console.log(message)
         })
         .catch((err)=>{

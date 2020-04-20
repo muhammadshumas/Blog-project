@@ -11,7 +11,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 Vue.use(BootstrapVue)
 
 // axios configuration
-axios.defaults.baseURL="https://localhost:3000"
+axios.defaults.baseURL='http://localhost:3000'
 
 
 Vue.config.productionTip = false
