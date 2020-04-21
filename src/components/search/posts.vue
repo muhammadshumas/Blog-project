@@ -42,7 +42,8 @@
                 console.log(e)
                 })
              }
-        }
+        },
+        
     }
 </script>
 

@@ -33,14 +33,14 @@
                         search(){
 
                             if(this.title!='' && this.tag==''){
-                                console.log(this.title)
+                                
                                 this.$store.dispatch('search',{title:this.title})
                                 this.$refs.title='';
                             
                             }
 
                             else if(this.tag!='' && this.title==''){
-                                 console.log('searched tag')
+                                
                                 this.$store.dispatch('search',{tag:this.tag})
                                 this.$refs.tag='';
                             }
