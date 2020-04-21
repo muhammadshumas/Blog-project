@@ -1,15 +1,24 @@
 <template>
-  <div id="app">
-    <div id="nav text-center  ">
-      <router-link to="/">Search</router-link> |
-      <router-link to="/createPost">About</router-link>
-    </div>
-    <router-view/>
+<div>
+  <div class="text-center mt-4">
+    <router-link to="/">Search</router-link>
+    <router-link class="ml-3" to="/createPost">Create Post</router-link>
   </div>
+  <router-view></router-view>
+</div>
 </template>
 
-<style>
-textarea{
-  resize: none !important;
-}
-</style>
+<script>
+
+
+export default {
+  name: 'App',
+
+  components: {
+  },
+
+  data: () => ({
+    //
+  }),
+};
+</script>
