@@ -6,7 +6,9 @@
         <router-link class="ml-3" to="/allposts">All Posts</router-link> 
      </div>
      <router-view></router-view>
-  </div>
+  
+
+</div>
 </template>
 
 <script>

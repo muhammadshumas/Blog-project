@@ -13,7 +13,7 @@
                  @change="test($event)"
               ></b-form-select>
             </b-form-group> -->
-            <select name="" id="" @change="test($event)" class="w-100 d-block" >
+            <select name="" id="" @change="getParentsId($event)" class="w-100 d-block" >
               <option v-for="(parent,index) in parents" :value="parent.text" :dataId="parent.id" :key="index">{{parent.text}}
               </option>   
             </select>
@@ -88,40 +88,35 @@
     computed:{
       ...mapGetters([
         "getPosts"
-      ]),
-      clearForm(){
-        this.form.title=this.form.content=this.form.tags='';
-        this.parent=this.id=null
+      ])
+    },
+    watch:{
+      getPosts(posts){
+        posts.forEach(post=>{
+          this.parents.push({text:post.title,value:post.title})
+        })
       }
     },
     methods: {
       getPostsTitle(){
-        axios.get('/getposts').then(posts=>{
-          console.log(posts)
-          this.$store.dispatch('fetchPosts',posts.data)
-          posts.data.forEach(post=>{
-            this.parents.push({text:post.title,value:post.title,id:post.id})
-          })
-        }).catch(err=>{
-          console.log(err)
-        })
+        this.parents=[{ text: 'Select One', value: null }]
+        this.$store.dispatch('fetchPosts')
       },
       onSubmit(evt) {
-        console.log(this.form)
         axios.post('/createpost',this.form).then(message=>{
-          console.log(message)
           this.getPostsTitle()
-            this.clearForm;
+          this.clearForm();
         })
         .catch((err)=>{
           console.log(err)
         })
-  
       },
-
-      test(event){
+      getParentId(event){
           this.form.id=event.target.options[event.target.options.selectedIndex].getAttribute('dataId')
-          console.log(this.form.id)
+      },
+      clearForm(){
+        this.form.title=this.form.content=this.form.tags='';
+        this.parent=this.id=null
       }
     }
   }
