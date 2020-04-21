@@ -15,8 +15,7 @@
             </b-form-group> -->
             <select name="" id="" @change="test($event)" class="w-100 d-block" >
               <option v-for="(parent,index) in parents" :value="parent.text" :dataId="parent.id" :key="index">{{parent.text}}
-              </option>
-              
+              </option>   
             </select>
 
             <b-form-group
@@ -72,15 +71,7 @@
   import {mapActions,mapGetters} from 'vuex'
   export default {
     created(){
-      axios.get('/getposts').then(posts=>{
-        console.log(posts)
-        this.$store.dispatch('fetchPosts',posts.data)
-        posts.data.forEach(post=>{
-          this.parents.push({text:post.title,value:post.title,id:post.id})
-        })
-      }).catch(err=>{
-        console.log(err)
-      })
+      this.getPostsTitle()
     },
     data() {
       return {
@@ -88,7 +79,8 @@
           title: '',
           content:'',
           parent: null,
-          id:null
+          id:null,
+          tags:''
         },
         parents: [{ text: 'Select One', value: null }],
       }
@@ -96,17 +88,37 @@
     computed:{
       ...mapGetters([
         "getPosts"
-		  ])
+      ]),
+      clearForm(){
+        this.form.title=this.form.content=this.form.tags='';
+        this.parent=this.id=null
+      }
     },
     methods: {
+      getPostsTitle(){
+        axios.get('/getposts').then(posts=>{
+          console.log(posts)
+          this.$store.dispatch('fetchPosts',posts.data)
+          posts.data.forEach(post=>{
+            this.parents.push({text:post.title,value:post.title,id:post.id})
+          })
+        }).catch(err=>{
+          console.log(err)
+        })
+      },
       onSubmit(evt) {
+        console.log(this.form)
         axios.post('/createpost',this.form).then(message=>{
           console.log(message)
+          this.getPostsTitle()
+            this.clearForm;
         })
         .catch((err)=>{
           console.log(err)
         })
+  
       },
+
       test(event){
           this.form.id=event.target.options[event.target.options.selectedIndex].getAttribute('dataId')
           console.log(this.form.id)
