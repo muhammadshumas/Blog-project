@@ -1,7 +1,7 @@
 <template>
     
          <div class="blog" >
-                   <div v-for="(post,index) in getPosts" :key="index">
+                   <div v-for="(post,index) in getsearchedPosts" :key="index">
                         <h1>{{post.title}}</h1>
                         <p>{{post.content}}</p>
 
@@ -26,7 +26,7 @@
     export default {
         post:[],
          computed: {
-            ...mapGetters(["getPosts"])
+            ...mapGetters(["getsearchedPosts"])
         },
         methods:{
             deletePost(index){

@@ -31,7 +31,7 @@ const state={
     }
 
    const getters= {
-    getPosts(state) {
+    getsearchedPosts(state) {
         return state.searchedPosts;
     }
    }

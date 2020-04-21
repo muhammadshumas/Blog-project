@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import search from '../views/search-page.vue'
 import addPost from '../views/add-post.vue'
+import allPosts from '../views/allPosts.vue'
 
 Vue.use(VueRouter)
 
@@ -14,11 +15,14 @@ Vue.use(VueRouter)
   {
     path: '/createPost',
     name: 'createPost',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component:addPost
-  }
+  },
+  {
+    path: '/allPosts',
+    name: 'allposts',
+    component:allPosts
+  },
+
 ]
 
 const router = new VueRouter({
