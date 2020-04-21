@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 const state={
   posts:[]
 }
@@ -7,13 +9,15 @@ const getters={
     return state.posts
   }
 }
-
 const mutations={
-  fetchPosts(state,posts){
-    state.posts=posts
+  fetchPosts(state,payload){
+    axios.get('/getposts').then(posts=>{
+      state.posts=posts.data
+    }).catch(err=>{
+      console.log(err)
+    }) 
   }
 }
-  
 const actions={
   fetchPosts(context,posts){
     context.commit('fetchPosts',posts)
