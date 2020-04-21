@@ -10,10 +10,7 @@ export default new Vuex.Store({
   mutations: {},
   actions: {},
   modules: {
-<<<<<<< HEAD
-    myPost
-=======
+    myPost,
     posts
->>>>>>> 18871f4dcd0c77b722f411744d548db102460929
   }
 })
