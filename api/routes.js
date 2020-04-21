@@ -33,4 +33,34 @@ Router.post('/createpost',(req,res,next)=>{
 
 })
 
+Router.post('/deletepost',(req,res,next)=>{
+  fs.readFile('posts.json',(err,data)=>{
+    if(!err){
+      posts=JSON.parse(data)
+    }
+    posts=posts.filter((post)=>{
+      return post.id!==req.body.id
+    })
+
+    fs.writeFile('posts.json',JSON.stringify(posts),(err)=>{
+      res.send({message:'Post Deleted'})
+    })
+  })
+})
+
+Router.post('/updatepost',(req,res,next)=>{
+  fs.readFile('posts.json',(err,data)=>{
+    if(!err){
+      posts=JSON.parse(data)
+    }
+    let updatedPostIndex=posts.findIndex(post=>{
+      post.id===req.body.id
+    })
+    posts[updatedPostIndex]=req.body;
+    fs.writeFile('posts.json',JSON.stringify(posts),(err)=>{
+      res.send({message:'Post Deleted'})
+    })
+  })
+})
+
 module.exports=Router
