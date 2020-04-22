@@ -21,10 +21,7 @@ Router.post('/createpost',(req,res,next)=>{
     if(!err){
       posts=JSON.parse(data);
     }
-    if(!req.body.id){
-      req.body.id=uuidv4()
-    }
-    
+    req.body.id=uuidv4()
     posts.push(req.body)
     fs.writeFile('posts.json',JSON.stringify(posts),(err)=>{
     res.send({message:'Post Added'})
@@ -33,28 +30,27 @@ Router.post('/createpost',(req,res,next)=>{
 
 })
 
-Router.post('/deletepost',(req,res,next)=>{
+Router.post('/deletepost/:id',(req,res,next)=>{
   fs.readFile('posts.json',(err,data)=>{
     if(!err){
       posts=JSON.parse(data)
     }
     posts=posts.filter((post)=>{
-      return post.id!==req.body.id
+      return post.id!==req.params.id && post.parentId!==req.parentId
     })
-
     fs.writeFile('posts.json',JSON.stringify(posts),(err)=>{
       res.send({message:'Post Deleted'})
     })
   })
 })
 
-Router.post('/updatepost',(req,res,next)=>{
+Router.post('/editpost/:id',(req,res,next)=>{
   fs.readFile('posts.json',(err,data)=>{
     if(!err){
       posts=JSON.parse(data)
     }
     let updatedPostIndex=posts.findIndex(post=>{
-      post.id===req.body.id
+      return post.id===req.params.id && post.parentId===req.body.parentId
     })
     posts[updatedPostIndex]=req.body;
     fs.writeFile('posts.json',JSON.stringify(posts),(err)=>{

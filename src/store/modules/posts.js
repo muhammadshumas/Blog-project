@@ -11,11 +11,7 @@ const getters={
 }
 const mutations={
   fetchPosts(state,payload){
-    axios.get('/getposts').then(posts=>{
-      state.posts=posts.data
-    }).catch(err=>{
-      console.log(err)
-    }) 
+    
   }
 }
 const actions={
