@@ -53,6 +53,11 @@ Router.post('/editpost/:id',(req,res,next)=>{
       return post.id===req.params.id && post.parentId===req.body.parentId
     })
     posts[updatedPostIndex]=req.body;
+    posts.forEach(post=>{
+      if(post.parentId!==null && post.parentId===posts[updatedPostIndex].id){
+        post.parent=posts[updatedPostIndex].title
+      }      
+    })
     fs.writeFile('posts.json',JSON.stringify(posts),(err)=>{
       res.send({message:'Post Deleted'})
     })
