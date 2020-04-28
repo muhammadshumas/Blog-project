@@ -1,154 +1,107 @@
 <template>
-<v-app>
-    <div class="container-fluid"> 
-      <div class="row">
-        <div class="col-lg-4 col-12">
-              <!-- Search -->
-          <div class="search  ">
-                <h1 class="text-primary font-weight-bold">Search</h1>
-                <div class="row">
-                  <div class="col-12 py-0">
-                  <form action="" @submit.prevent="search" class="bg-light p-3">
-
-                  <div class="my-2 mx-auto">
-                      <label for="search_title" class="text-info">Search By Title</label>
-                      <input v-model="title" ref="title"  class="form-control" id="search_title" type="text" >
-                  </div>
-                  
-                  <div class="my-2 mx-auto">
-                      <label for="search_tag" class="text-info">Search By Tag</label>
-                      <input v-model="tag" ref="tag" class="form-control" id="search_tag" type="text" >
-                  </div>
-                  <div>
-                    <b-form-radio class="d-inline-block" v-model="searchedRadio" name="filter" value="main">Main</b-form-radio>
-                    <b-form-radio class="d-inline-block ml-3" v-model="searchedRadio" name="filter" value="sub">Sub</b-form-radio>
-                  </div>
-                  <div class="my-2 mx-auto">
-                      <input type="submit" class="btn btn-primary">
-                  </div>
-                  </form>
-                  </div>
-                </div>
-                
-          </div>
-
-      <!-- Add Post Section -->
-            <div class="create_post bg-light p-3">
-              <h1 class="text-primary font-weight-bold">{{postFormHeading}}</h1>
-                <div class="row">
-                  <div class="col-12 py-0">
-                    <b-form @submit.prevent="onSubmit">
-                      <model-select :options="parents"
-                                      v-model="parent"
-                                      placeholder="select Main Post">
-                      </model-select>
-
-                      <b-form-group
-                        id="title"
-                        label="Title:"
-                        label-for="title"
-                        class="text-info"
-                      >
-                        <b-form-input
-                          id="title"
-                          v-model="$v.form.title.$model"
-                          type="text"
-                          :state="validateState('title')"
-                          placeholder="Enter Post Title"
-                        ></b-form-input>
-                          <b-form-invalid-feedback
-                          >Post Title is required with atleast 3 characters</b-form-invalid-feedback>
-
-                      </b-form-group>
-
-                      <b-form-group
-                        id="content"
-                        label="Content:"
-                        label-for="content"
-                        class="text-info">
-                        <b-form-textarea
-                          id="content"
-                          v-model="$v.form.content.$model"
-                          :state="validateState('content')"
-                          placeholder="Enter Post Content"
-                          rows="6"
-                          required
-                          max-rows="6"
-                          >
-                        </b-form-textarea>
-                        <b-form-invalid-feedback
-                        >Post Must have some content</b-form-invalid-feedback>         
-                      </b-form-group>
-
-                      <b-form-group id="tags" label="Post Tags:" label-for="tags" class="text-info" 
-                      description="Seperate tags by commas">
-                        <b-form-input
-                          id="tags"
-                          v-model="$v.form.tags.$model"
-                          :state="validateState('tags')"
-                          required
-                          placeholder="Enter Post Tags"
-                        ></b-form-input>
-                        <b-form-invalid-feedback
-                        >Post Must have atleast 1 tag</b-form-invalid-feedback>  
-                      </b-form-group>
-
-                      <b-button type="submit" variant="primary">Submit</b-button>
-                    </b-form>
-                  </div>
-                </div>
-            
-          </div>
-        </div>
-
-        <div class="col-lg-8 col-12">
-    <!-- all posts section -->
-            <h1 class="text-primary font-weight-bold">All Posts</h1>
-          <v-data-table
-            :headers="headers"
-            :items="searchedPosts"
-            sort-by="calories"
-            class="elevation-1 bg-light"
-          >
-          <template v-slot:top="{ pagination, options, updateOptions }">
-            <v-data-footer 
-              :pagination="pagination" 
-              :options="options"
-              @update:options="updateOptions"
-              items-per-page-text="$vuetify.dataTable.itemsPerPageText"/>
-          </template>
-            <template v-slot:item.actions="{ item }">
-              <v-icon 
-              small
-              class="mr-2"
-              @click="copyPost(item.content)">
-                mdi-content-copy
-              </v-icon>
-              <v-icon
-                small
-                class="mr-2"
-                @click="editPost(item)"
-              >
-                mdi-pencil
-              </v-icon>
-              <v-icon
-                small
-                @click="deletePost(item)"
-              >
-                mdi-delete
-              </v-icon>
-            </template>
-            <template v-slot:no-data>
-              <p>No Post Found</p>
-            </template>
-          </v-data-table> 
+    <main>
+      <div class="container-fluid">
+        <div class="row">
           
+          <div class="col-lg-6 col-12">
+            <div class="d-flex d-lg-block justify-content-between flex-wrap">
+              <form @submit.prevent="search" class="form rounded-border-radius">
+                <h5 class="form-headings text-capitalize">search</h5>
+                  <div class="form-group">
+                    <label class="input-label" for="title">Title</label>
+                    <input v-model="title" type="text" class="form-control inputs" id="title">
+                  </div>
+                  <b-form-group class="search-form__radios mt-2">
+                    <b-form-radio-group
+                      id="radio-group-1"
+                      v-model="searchedRadio"
+                      :options="options"
+                      name="radio-options"
+                    ></b-form-radio-group>
+                  </b-form-group>
+
+                  <div class="form-group">
+                    <label class="input-label" for="title">Search By Tags </label>
+                    <model-select :options="allTags"
+                                    v-model="tag"
+                                    placeholder="" 
+                                    class="inputs search-form__select">
+                    </model-select>
+                  </div>
+                  <button class="btn btn-primary button">Submit</button>
+
+              </form>
+              
+              <form @submit.prevent="onSubmit" class="form rounded-border-radius mt-lg-5 mt-md-0 mt-5">
+                <h5 class="form-headings text-capitalize">Insert</h5>
+                  <div class="form-group">
+                    <label class="input-label" for="title">Select Parent</label>
+                    <model-select :options="parents"
+                                    v-model="parent"
+                                    placeholder="" 
+                                    class="inputs search-form__select">
+                    </model-select>
+                  </div>
+                  <div class="form-group">
+                    <label class="input-label" for="addTitle">Title</label>
+                    <input type="text" class="form-control inputs" id="addTitle" v-model="form.title">
+                  </div>
+                  <b-form-group
+                    id="content"
+                    label="Content:"
+                    label-for="content">
+                    <b-form-textarea
+                      id="content"
+                      v-model="form.content"
+                      placeholder="Enter Post Content"
+                      rows="6"
+                      required
+                      max-rows="6"
+                      >
+                    </b-form-textarea>
+
+                  </b-form-group>
+                    <div class="form-group">
+                      <label class="input-label" for="tags">Tags</label>
+                      <input type="text" class="form-control inputs" id="tags" v-model="form.tags">
+                    </div>
+                    <div class="d-flex justify-content-between" v-if="addedTags[0]!==''">
+                      <p class="tag" v-for="(addedTag,index) in addedTags" :key="index">{{addedTag}}</p>
+                    </div>
+
+                  <button class="btn btn-primary button">Submit</button>
+
+              </form>
+            </div>
+          </div>
+          <div class="col-lg-6 col-12">
+            <div class="d-flex d-lg-block justify-content-between flex-wrap">
+              <div class="post text-white d-flex" v-for="post in searchedPosts" :key=post.id>
+                <div class="post__actions">
+                  <div class="post__actions__copy rounded-circle" @click.stop="copyPost(post.content)">
+                    <i class="icon-hardware position-absolute "></i>
+                  </div>
+                  <div class="post__actions__edit rounded-circle" @click.stop="editPost(post)">
+                    <i class="icon-edit position-absolute"></i>
+                  </div>
+                  <div class="post__actions__delete rounded-circle" @click.stop="deletePost(post)">
+                    <i class="icon-bin position-absolute"></i>
+                  </div>
+                </div>
+
+                <div class="post__content flex-grow-1">
+                  <p class="m-0 post__content__heading font-weight-bold">{{post.title}}</p>
+                  <p class="post__content__main m-0 mt-3 pb-4 border-bottom">{{post.content}}</p>
+                  <div class="post__content__tags d-flex mt-3 flex-wrap justify-content-between text-center">
+                    <p class="tag" v-for="(tag,index) in post.tags" :key="index">{{tag}}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-
-  </div>
-</v-app>
-
+    </main>
 </template>
 
 <script>
@@ -161,7 +114,6 @@ export default {
     this.fetchAllPosts()
   },
   mounted(){
-    document.querySelectorAll('.v-data-footer')[1].remove()
     this.$toastr.defaultPosition = "toast-top-center";
     this.$toastr.defaultTimeout = 2000;
     this.$toastr.defaultProgressBar = false;
@@ -172,10 +124,17 @@ export default {
       searchedPosts: [],
 
       // search posts
+          
        title:'',
        tag:'',
        post:[],
       searchedRadio: 'main',
+      allTags:[],
+      addedTags:[],
+      options: [
+                { text: 'Main', value: 'main' },
+                { text: 'All', value: 'all' },
+              ],
       //  add posts
         parent: {
           value: '',
@@ -192,31 +151,8 @@ export default {
           tags:'',
         },
         parents: [{ text: 'Select One', value: null }],
-           
-         //data table   
-      headers: [
-        { text: 'Title', value: 'title' },
-        { text: 'Post Content', value: 'content' },
-        { text: 'Tags', value: 'tags' },
-        { text: 'Main', value: 'parent' },
-        { text: 'Actions', value: 'actions', sortable: false },
-      ],       
+               
     }
-  },
-  validations: {
-    form:{
-      title: {
-      required,
-      minLength: minLength(4)
-      },
-      content:{
-        required
-      },
-      tags:{
-        required
-      }
-    }
-  
   },
   watch:{
     title(newTitle){
@@ -225,7 +161,10 @@ export default {
       }
     },
     tag(newTag){
-      if(newTag==='' && this.title===''){
+      if(newTag===undefined){
+        this.tag=''
+      }
+      if(this.tag==='' && this.title===''){
         this.searchedPosts=this.posts
       }
     },
@@ -234,7 +173,13 @@ export default {
       posts.forEach(post=>{
         this.parents.push({text:post.title,value:post.title,id:post.id})
       })
-    }
+    },
+    form:{
+        handler(formValues){
+          this.addedTags=formValues.tags.split(',')
+        },
+        deep:true
+      }
   },
    methods:{
     // Search posts
@@ -244,12 +189,9 @@ export default {
             this.searchedPosts=this.posts.filter(post=>{
               const postFound= post.title.toLowerCase().includes(this.title.toLowerCase())
               if(postFound){
-                if(this.searchedRadio.toLowerCase()===''){
+                if(this.searchedRadio.toLowerCase()==='' || this.searchedRadio.toLowerCase()==='all'){
                   return post
                 }else if(this.searchedRadio.toLowerCase()==='main' && !post.parentId){
-                  return post
-                }else if(this.searchedRadio.toLowerCase()==='sub' && post.parentId){
-
                   return post
                 }
               }
@@ -258,23 +200,24 @@ export default {
           }
                     
           else if(this.tag!='' && this.title==''){   
-            
+            console.log(this.tag)
             this.searchedPosts=[];
             this.searchedPosts=this.posts.filter(post=>{
-              const postFound= post.tags.find((tag)=>{
+              return post.tags.find((tag)=>{
                 return tag.toLowerCase().includes(this.tag)
               })
               
-              if(postFound){
-                if(this.searchedRadio.toLowerCase()===''){
-                  return post
-                }else if(this.searchedRadio.toLowerCase()==='main' && !post.parentId){
-                  return post
-                }else if(this.searchedRadio.toLowerCase()==='sub' && post.parentId){
+              
+              // if(postFound){
+              //   if(this.searchedRadio.toLowerCase()===''){
+              //     return post
+              //   }else if(this.searchedRadio.toLowerCase()==='main' && !post.parentId){
+              //     return post
+              //   }else if(this.searchedRadio.toLowerCase()==='sub' && post.parentId){
 
-                  return post
-                }
-              }
+              //     return post
+              //   }
+              // }
             })
             this.$refs.tag='';
             }
@@ -286,35 +229,40 @@ export default {
             fetchAllPosts(){
               axios.get('/getposts').then(posts=>{
                 this.posts=posts.data;
-                this.searchedPosts=posts.data
                 this.posts.forEach(post=>{
                   post.tags=post.tags.split(',')
+                  post.tags.forEach(tag=>{
+                    this.allTags.push({ text: tag, value: tag })
+                  })
+                  
                 })
+                this.searchedPosts=[...this.posts]
               }).catch(err=>{
                 console.log(err)
               }) 
             },
-            validateState(name) {
-              const { $dirty, $error } = this.$v.form[name];
-              return $dirty ? !$error : null;
+            reset () {
+              this.parent = {}
             },
-            // reset () {
-            //   this.parent = {}
-            // },
-            // selectFromParentComponent1 () {
-            //   // select option from parent component
-            //   this.parent = this.parents[0]
-            // },
+            selectFromParentComponent1 () {
+              // select option from parent component
+              this.parent = this.parents[0]
+            },
             editPost(post){
               this.postFormHeading='Edit Post'
               this.editMode=true;
-              this.form=this.searchedPosts.find(p=>{
+              let editedPostIndex=this.searchedPosts.findIndex(p=>{
                 if(post.id===p.id && post.parentId===p.parentId){
-                  p.tags=p.tags.join()
+                  this.parent.id=p.parentId
                   this.parent.value=p.parent
+                  p.tags=p.tags.join()            
                   return p
                 }
               })
+              this.form=this.searchedPosts[editedPostIndex]
+              console.log(this.form)
+              this.searchedPosts.splice(editedPostIndex,1,{})
+
             },
             copyPost(content) {
                 this.$copyText(content).then( (e)=> {
@@ -327,16 +275,13 @@ export default {
 
       //Add post Methods
       onSubmit(evt) {
-        this.$v.form.$touch();
-        if (this.$v.form.$anyError) {
-          return;
-        }
         this.form.parent=this.parent.value;
         this.form.parentId=this.parent.id || null
-        console.log(this.form)
         const formData={...this.form};
+
         if(!this.editMode){
           return axios.post('/createpost',formData).then(data=>{
+            console.log(data)
             this.$toastr.s('Post Added')
             this.clearForm();
             this.fetchAllPosts()
@@ -346,11 +291,7 @@ export default {
             console.log(err)
           })
         }
-      
         axios.post(`/editPost/${formData.id}`,formData).then(message=>{
-          const editedPostIndex=this.posts.findIndex(post=>{
-            return post.id===formData.id && post.parentId===formData.parentId
-          })
           this.editMode=false;
           this.postFormHeading='Create Post'
           this.$toastr.s('Post Edited')
@@ -363,32 +304,8 @@ export default {
         this.form.title=this.form.content=this.form.tags='';
         this.id=null
         this.parent = {text:'',value:''}
-        this.$nextTick(() => {
-          this.$v.$reset();
-        });
-      },
-        //data table
-      close () {
-        this.dialog = false
-        setTimeout(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
-          this.editedIndex = -1
-        }, 300)
       },
 
-      save () {
-        if (this.editedIndex > -1) {
-          Object.assign(this.desserts[this.editedIndex], this.editedItem)
-        } else {
-          this.desserts.push(this.editedItem)
-        }
-        this.close()
-      },
-      // deleteItem (item) {
-
-      //   const index = this.desserts.indexOf(item)
-      //   confirm('Are you sure you want to delete this item?') && this.desserts.splice(index, 1)
-      // },
       deletePost(post){
         if(confirm('Are you sure you want to delete this item?')){
           console.log(post.parentId)
@@ -412,17 +329,177 @@ export default {
 
 
 <style>
+/* fonts used */
+/* font-family: 'PT Sans', sans-serif;
+font-family: 'Poppins', sans-serif;
+font-family: 'Open Sans', sans-serif; */
+@font-face{
+  font-family: 'louisgeorgecafe';
+  src:url('./assets/fonts/Louis George Cafe Bold.ttf')
+}
+
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600|PT+Sans:700|Poppins:300,600&display=swap');
+
+/* icons */
+@import url('./assets/icons/demo-files/demo.css');
+@import url('./assets/icons/style.css');
+
   html{
     font-size:100% !important;
   }
-  .v-data-footer{
-    justify-content: flex-start !important;
-    background-color: #e8e8e8;
+  main{
+    padding:4.375rem 0rem
   }
 
+  textarea{
+    resize: none !important;
+    border-color:#d6d6d6 !important;
+    border-radius:11px !important;
+  }
+  textarea:focus{
+    box-shadow: 0 0 0 0.2rem rgba(13, 145, 135, 0.25) !important;
+  }
+  .container-fluid{
+    padding-left:4.8125rem !important;
+    padding-right:6.5rem !important;
+  }
+  .rounded-border-radius{
+    border-radius: 10px;
+  }
+  .form{
+    padding:1.8125rem 6.5625rem 1.8125rem 3.4375rem; 
+    box-shadow:0px 0px 20px 8px #f0f0f0;
+  }
+  .form-headings{
+    font-size:1.25rem;
+    font-family: 'PT Sans', sans-serif;
+    font-weight: bold;
+    color:#0d9187;
+    margin-bottom:2.3rem;
+  }
+
+  .input-label,#content__BV_label_{
+    font-family:'louisgeorgecafe';
+    font-size:1.1106rem;
+    font-weight:bold;
+    padding-left:0.9375rem;
+    margin-bottom:0.8125rem;
+  }
+  .inputs{
+    border-radius: 30px !important;
+    padding:21px 20px !important;
+    border-color:#d6d6d6 !important;
+  }
+  .inputs:focus{
+    box-shadow: 0 0 0 0.2rem rgba(13, 145, 135, 0.25) !important;
+  }
+  .button{
+    background-color: #24a99d !important;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600 !important;
+    border-color: #24a99d !important;
+    padding:0.5rem 1.75rem !important;
+    border-radius: 30px !important;
+    margin:0.5rem 0rem 0rem 0.9375rem;
+    box-shadow: -1px -1px 0px 1px #16675f;
+  }
+  .tag{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:0.875rem;
+    background:white;
+    border-radius: 20px;
+    padding:0.4375rem 1.75rem;
+    color:black;
+    box-shadow: 1px 1px 0px 1px #d2d2d2;
+  }
+
+  .custom-control-input:checked ~ .custom-control-label::before{
+    border-color: #0d9187 !important;
+    background-color: #0d9187 !important;
+  }
+  .custom-control-label::before{
+    border: #d6d6d6 solid 1px;
+  }
+  .custom-radio .custom-control-label::before {
+    border-radius: 0.25em !important;
+  }
+  .search-form__radios{
+    padding-left:0.9375rem;
+    margin-bottom: 1.5rem
+  }
+  .search-form__select{
+    padding:0.875rem 1.25rem !important;
+  }
+  .search-form__select input{
+    margin-top:11px;
+  }
+  .ui.selection.dropdown>.delete.icon, .ui.selection.dropdown>.dropdown.icon, .ui.selection.dropdown>.search.icon{
+    top: 1.085714em !important;
+  }
+
+  .post{
+    background-color:#029f92;
+    padding:1.1875rem 2.375rem 1.1875rem 2.375rem;
+    font-family: 'Open Sans', sans-serif;
+    border-radius:10px;
+    margin-bottom:2.5rem;
+  }
+  .post__actions__copy,.post__actions__edit,.post__actions__delete{
+    position: relative;
+    height:30px;
+    width:30px;
+    border:solid 1px white;
+    margin-bottom:1.25rem;
+    cursor:pointer;
+  }
+    .post__actions__copy i,.post__actions__edit i,.post__actions__delete i{
+      left:50%;
+      top:50%;
+      transform: translate(-50%,-50%);
+      font-size:0.9rem;
+    }
+    .post__content{
+      margin-left:1.6875rem;
+    }
+    .post__content__heading{
+      margin-top:-0.375rem !important
+    }
+    .post__content__tags p{
+      flex-basis:30%;
+      max-width:30%;
+    }
+    @media(max-width:1199px){
+      html{
+        font-size:90% !important;
+      }
+      .form {
+        padding: 1.8125rem 2rem 1.8125rem 2rem;
+      }
+    }
   @media(max-width:991px){
-    html{
-      font-size:90% !important;
+    .container-fluid{
+      padding-left:15px !important;
+      padding-right:15px !important;
+    }
+    .form,.post{
+      flex-basis:48%;
+      max-width:48%;
+    }
+    .tag {
+      padding: 0.4375rem 1rem;
     }
   }
+  @media(max-width:767px){
+    .form,.post{
+      flex-basis:100%;
+      max-width:100%;
+    }
+  }
+  
+  @media(max-width:575px){
+    .post {
+        padding: 1.1875rem 1.5rem 1.1875rem 1.5rem;
+    }    
+  }
 </style>
+

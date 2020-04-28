@@ -7,6 +7,7 @@ import vuetify from './plugins/vuetify';
 import { BootstrapVue} from 'bootstrap-vue';
 import Vuelidate from 'vuelidate'
 
+
 //Bootstrap Vue configuration
 
 import 'bootstrap/dist/css/bootstrap.css'
