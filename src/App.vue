@@ -4,7 +4,7 @@
         <div class="row">
           
           <div class="col-lg-6 col-12">
-            <div class="d-flex d-lg-block justify-content-between flex-wrap">
+            <div class="d-flex flex-column flex-sm-row flex-lg-column h-100 justify-content-between justify-content-lg-start">
               <form @submit.prevent="search" class="form rounded-border-radius">
                 <h5 class="form-headings text-capitalize">search</h5>
                   <div class="form-group">
@@ -22,11 +22,7 @@
 
                   <div class="form-group">
                     <label class="input-label" for="title">Search By Tags </label>
-                    <model-select :options="allTags"
-                                    v-model="tag"
-                                    placeholder="" 
-                                    class="inputs search-form__select">
-                    </model-select>
+                    <input v-model="tag" type="text" class="form-control inputs" id="tag">
                   </div>
                   <button class="btn btn-primary button">Submit</button>
 
@@ -63,10 +59,10 @@
                   </b-form-group>
                     <div class="form-group">
                       <label class="input-label" for="tags">Tags</label>
-                      <input type="text" class="form-control inputs" id="tags" v-model="form.tags">
+                      <input type="text" class="form-control inputs" id="tags" v-model="form.tags" required>
                     </div>
-                    <div class="d-flex justify-content-between" v-if="addedTags[0]!==''">
-                      <p class="tag" v-for="(addedTag,index) in addedTags" :key="index">{{addedTag}}</p>
+                    <div class="d-flex flex-wrap">
+                      <p class="tag added-tags text-center" v-if="addedTag!==''" :class="{'ml-2':index>0}" v-for="(addedTag,index) in addedTags" :key="index">{{addedTag}}</p>
                     </div>
 
                   <button class="btn btn-primary button">Submit</button>
@@ -76,7 +72,7 @@
           </div>
           <div class="col-lg-6 col-12">
             <div class="d-flex d-lg-block justify-content-between flex-wrap">
-              <div class="post text-white d-flex" v-for="post in searchedPosts" :key=post.id>
+              <div class="post text-white d-flex" :class="{'mb-lg-0':index+1===searchedPosts.length}" v-for="(post,index) in searchedPosts" :key=post.id>
                 <div class="post__actions">
                   <div class="post__actions__copy rounded-circle" @click.stop="copyPost(post.content)">
                     <i class="icon-hardware position-absolute "></i>
@@ -92,8 +88,8 @@
                 <div class="post__content flex-grow-1">
                   <p class="m-0 post__content__heading font-weight-bold">{{post.title}}</p>
                   <p class="post__content__main m-0 mt-3 pb-4 border-bottom">{{post.content}}</p>
-                  <div class="post__content__tags d-flex mt-3 flex-wrap justify-content-between text-center">
-                    <p class="tag" v-for="(tag,index) in post.tags" :key="index">{{tag}}</p>
+                  <div class="post__content__tags d-flex mt-3 flex-wrap text-center">
+                    <p :class="{'ml-md-screen':index>0 && index%3!==0,'ml-sm-screen':index>0 && index%4!==0,'ml-xs-screen':index>0 && index%3!==0}" class="tag" v-for="(tag,index) in post.tags" :key="index">{{tag}}</p>
                   </div>
                 </div>
               </div>
@@ -161,9 +157,6 @@ export default {
       }
     },
     tag(newTag){
-      if(newTag===undefined){
-        this.tag=''
-      }
       if(this.tag==='' && this.title===''){
         this.searchedPosts=this.posts
       }
@@ -220,9 +213,7 @@ export default {
               // }
             })
             this.$refs.tag='';
-            }
-              
-                
+            }   
           },
                
 
@@ -348,7 +339,7 @@ font-family: 'Open Sans', sans-serif; */
     font-size:100% !important;
   }
   main{
-    padding:4.375rem 0rem
+    padding:2rem 0rem
   }
 
   textarea{
@@ -359,9 +350,16 @@ font-family: 'Open Sans', sans-serif; */
   textarea:focus{
     box-shadow: 0 0 0 0.2rem rgba(13, 145, 135, 0.25) !important;
   }
+  .ml-md-screen{
+    margin-left:8px
+  }
   .container-fluid{
     padding-left:4.8125rem !important;
     padding-right:6.5rem !important;
+  }
+  .row>div{
+    max-height:100vh;
+    overflow-y:auto;
   }
   .rounded-border-radius{
     border-radius: 10px;
@@ -369,6 +367,9 @@ font-family: 'Open Sans', sans-serif; */
   .form{
     padding:1.8125rem 6.5625rem 1.8125rem 3.4375rem; 
     box-shadow:0px 0px 20px 8px #f0f0f0;
+  }
+  form.form:nth-of-type(2){
+    margin-bottom:0.8rem;
   }
   .form-headings{
     font-size:1.25rem;
@@ -408,7 +409,7 @@ font-family: 'Open Sans', sans-serif; */
     font-size:0.875rem;
     background:white;
     border-radius: 20px;
-    padding:0.4375rem 1.75rem;
+    padding:0.4375rem 1rem;
     color:black;
     box-shadow: 1px 1px 0px 1px #d2d2d2;
   }
@@ -436,7 +437,10 @@ font-family: 'Open Sans', sans-serif; */
   .ui.selection.dropdown>.delete.icon, .ui.selection.dropdown>.dropdown.icon, .ui.selection.dropdown>.search.icon{
     top: 1.085714em !important;
   }
-
+  .added-tags{
+    flex-basis:23%;
+    max-width:23%;
+  }
   .post{
     background-color:#029f92;
     padding:1.1875rem 2.375rem 1.1875rem 2.375rem;
@@ -465,8 +469,8 @@ font-family: 'Open Sans', sans-serif; */
       margin-top:-0.375rem !important
     }
     .post__content__tags p{
-      flex-basis:30%;
-      max-width:30%;
+      flex-basis:25%;
+      max-width:25%;
     }
     @media(max-width:1199px){
       html{
@@ -477,29 +481,74 @@ font-family: 'Open Sans', sans-serif; */
       }
     }
   @media(max-width:991px){
+    main {
+    padding: 1rem 0rem;
+  }
     .container-fluid{
       padding-left:15px !important;
       padding-right:15px !important;
+    }
+    .row>div{
+    max-height:initial;
+    }
+    .inputs {
+      padding: 0.9375rem 1.25rem !important;
+    }
+    .search-form__select {
+      padding: 0.6375rem 1.25rem !important;
+    }
+    .ui.selection.dropdown>.delete.icon, .ui.selection.dropdown>.dropdown.icon, .ui.selection.dropdown>.search.icon {
+      top: 0.685714em !important;
     }
     .form,.post{
       flex-basis:48%;
       max-width:48%;
     }
-    .tag {
-      padding: 0.4375rem 1rem;
+    .post {
+    margin-bottom: 1rem;
     }
+    form.form:nth-of-type(2){
+    margin-bottom:0rem;
+    }
+    .tag {
+      padding: 0.4375rem 0.5rem;
+    }
+    .ml-md-screen{
+      margin-left:8px
+    }
+
   }
   @media(max-width:767px){
     .form,.post{
       flex-basis:100%;
       max-width:100%;
     }
+    .post__content__tags p {
+    flex-basis: 20%;
+    max-width: 20%;
+    }
+    .ml-md-screen{
+      margin-left:0px
+    }
+    .ml-sm-screen{
+      margin-left:8px;
+    }
   }
   
-  @media(max-width:575px){
+  @media(max-width:575px){ 
+    .ml-sm-screen{
+      margin-left:0px;
+    }
+    .ml-xs-screen{
+      margin-left:8px
+    }
     .post {
         padding: 1.1875rem 1.5rem 1.1875rem 1.5rem;
-    }    
+    }
+    .post__content__tags p {
+      flex-basis: 25%;
+      max-width: 25%;
+    }
   }
 </style>
 
