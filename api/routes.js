@@ -35,8 +35,9 @@ Router.post('/deletepost/:id',(req,res,next)=>{
     if(!err){
       posts=JSON.parse(data)
     }
+    //&& post.parentId!==req.parentId
     posts=posts.filter((post)=>{
-      return post.id!==req.params.id && post.parentId!==req.parentId
+      return post.id!==req.params.id;
     })
     fs.writeFile('posts.json',JSON.stringify(posts),(err)=>{
       res.send({message:'Post Deleted'})
@@ -49,8 +50,10 @@ Router.post('/editpost/:id',(req,res,next)=>{
     if(!err){
       posts=JSON.parse(data)
     }
+
+    // && post.parentId===req.body.parentId
     let updatedPostIndex=posts.findIndex(post=>{
-      return post.id===req.params.id && post.parentId===req.body.parentId
+      return post.id===req.params.id
     })
     posts[updatedPostIndex]=req.body;
     posts.forEach(post=>{

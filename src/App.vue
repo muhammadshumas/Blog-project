@@ -61,8 +61,8 @@
                       <label class="input-label" for="tags">Tags</label>
                       <input type="text" class="form-control inputs" id="tags" v-model="form.tags" required>
                     </div>
-                    <div class="d-flex flex-wrap">
-                      <p class="tag added-tags text-center" v-if="addedTag!==''" :class="{'ml-2':index>0}" v-for="(addedTag,index) in addedTags" :key="index">{{addedTag}}</p>
+                    <div class="d-flex flex-wrap ml-n2">
+                      <p class="tag added-tags text-center ml-2" v-if="addedTag!==''" v-for="(addedTag,index) in addedTags" :key="index">{{addedTag}}</p>
                     </div>
 
                   <button class="btn btn-primary button">Submit</button>
@@ -70,17 +70,18 @@
               </form>
             </div>
           </div>
+
           <div class="col-lg-6 col-12">
             <div class="d-flex d-lg-block justify-content-between flex-wrap">
-              <div class="post text-white d-flex" :class="{'mb-lg-0':index+1===searchedPosts.length}" v-for="(post,index) in searchedPosts" :key=post.id>
-                <div class="post__actions">
+              <div class="post text-white d-flex flex-column flex-lg-row" :class="{'mb-lg-0':index+1===searchedPosts.length}" v-for="(post,index) in searchedPosts" :key="post.id">
+                <div class="post__actions d-flex d-lg-block">
                   <div class="post__actions__copy rounded-circle" @click.stop="copyPost(post.content)">
                     <i class="icon-hardware position-absolute "></i>
                   </div>
-                  <div class="post__actions__edit rounded-circle" @click.stop="editPost(post)">
+                  <div class="post__actions__edit rounded-circle ml-2 ml-lg-0" @click.stop="editPost(post)">
                     <i class="icon-edit position-absolute"></i>
                   </div>
-                  <div class="post__actions__delete rounded-circle" @click.stop="deletePost(post)">
+                  <div class="post__actions__delete rounded-circle ml-2 ml-lg-0" @click.stop="deletePost(post)">
                     <i class="icon-bin position-absolute"></i>
                   </div>
                 </div>
@@ -88,8 +89,10 @@
                 <div class="post__content flex-grow-1">
                   <p class="m-0 post__content__heading font-weight-bold">{{post.title}}</p>
                   <p class="post__content__main m-0 mt-3 pb-4 border-bottom">{{post.content}}</p>
-                  <div class="post__content__tags d-flex mt-3 flex-wrap text-center">
-                    <p :class="{'ml-md-screen':index>0 && index%3!==0,'ml-sm-screen':index>0 && index%4!==0,'ml-xs-screen':index>0 && index%3!==0}" class="tag" v-for="(tag,index) in post.tags" :key="index">{{tag}}</p>
+                  <div class="post__content__tags d-flex mt-3 flex-wrap text-center ml-n2">
+                    <p class="tag ml-2" v-for="(tag,index) in post.tags" :key="index" v-if="tag!==''">
+                      {{tag}}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -169,7 +172,10 @@ export default {
     },
     form:{
         handler(formValues){
-          this.addedTags=formValues.tags.split(',')
+          this.addedTags=formValues.tags.split(',').map(addedTag=>{
+            return addedTag.substring(0,30) 
+          })
+          this.form.tags=this.addedTags.join()          
         },
         deep:true
       }
@@ -294,13 +300,14 @@ export default {
       clearForm(){
         this.form.title=this.form.content=this.form.tags='';
         this.id=null
-        this.parent = {text:'',value:''}
+        this.parent = {text:'',value:''},
+        this.addedTags=[]
       },
 
       deletePost(post){
         if(confirm('Are you sure you want to delete this item?')){
           console.log(post.parentId)
-          axios.post(`/deletepost/${post.id}`,{parentId:post.parentId}).then(data=>{
+          axios.post(`/deletepost/${post.id}`).then(data=>{
           this.$toastr.s("Post Deleted", "Post Deleted");
           this.fetchAllPosts()
           }).catch(err=>{
@@ -437,10 +444,7 @@ font-family: 'Open Sans', sans-serif; */
   .ui.selection.dropdown>.delete.icon, .ui.selection.dropdown>.dropdown.icon, .ui.selection.dropdown>.search.icon{
     top: 1.085714em !important;
   }
-  .added-tags{
-    flex-basis:23%;
-    max-width:23%;
-  }
+
   .post{
     background-color:#029f92;
     padding:1.1875rem 2.375rem 1.1875rem 2.375rem;
@@ -468,25 +472,22 @@ font-family: 'Open Sans', sans-serif; */
     .post__content__heading{
       margin-top:-0.375rem !important
     }
-    .post__content__tags p{
-      flex-basis:25%;
-      max-width:25%;
+
+  @media(max-width:1199px){
+    html{
+      font-size:90% !important;
     }
-    @media(max-width:1199px){
-      html{
-        font-size:90% !important;
-      }
-      .form {
-        padding: 1.8125rem 2rem 1.8125rem 2rem;
-      }
-    }
-  @media(max-width:991px){
-    main {
-    padding: 1rem 0rem;
-  }
     .container-fluid{
       padding-left:15px !important;
       padding-right:15px !important;
+    }
+    .form {
+      padding: 1.8125rem 2rem 1.8125rem 2rem;
+    }
+  }
+  @media(max-width:991px){
+    main {
+    padding: 1rem 0rem;
     }
     .row>div{
     max-height:initial;
@@ -501,20 +502,24 @@ font-family: 'Open Sans', sans-serif; */
       top: 0.685714em !important;
     }
     .form,.post{
-      flex-basis:48%;
-      max-width:48%;
+      flex-basis:49%;
+      max-width:49%;
+      padding: 1.1875rem 1.5rem 1.1875rem 1.5rem;
     }
     .post {
     margin-bottom: 1rem;
+    }
+    .post__content {
+      margin-left: 0rem;
+    }
+    .post__actions__copy, .post__actions__edit, .post__actions__delete {
+      margin-bottom: 0.75rem;
     }
     form.form:nth-of-type(2){
     margin-bottom:0rem;
     }
     .tag {
       padding: 0.4375rem 0.5rem;
-    }
-    .ml-md-screen{
-      margin-left:8px
     }
 
   }
@@ -523,10 +528,7 @@ font-family: 'Open Sans', sans-serif; */
       flex-basis:100%;
       max-width:100%;
     }
-    .post__content__tags p {
-    flex-basis: 20%;
-    max-width: 20%;
-    }
+
     .ml-md-screen{
       margin-left:0px
     }
@@ -536,19 +538,10 @@ font-family: 'Open Sans', sans-serif; */
   }
   
   @media(max-width:575px){ 
-    .ml-sm-screen{
-      margin-left:0px;
-    }
-    .ml-xs-screen{
-      margin-left:8px
-    }
     .post {
         padding: 1.1875rem 1.5rem 1.1875rem 1.5rem;
     }
-    .post__content__tags p {
-      flex-basis: 25%;
-      max-width: 25%;
-    }
   }
+  
 </style>
 
